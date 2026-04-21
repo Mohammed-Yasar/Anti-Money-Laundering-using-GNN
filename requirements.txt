@@ -1,0 +1,20 @@
+# Core Data Science
+numpy
+pandas
+networkx
+scipy
+scikit-learn
+matplotlib
+seaborn
+tqdm
+
+# Deep Learning (GNN)
+torch
+torch_geometric
+
+# Dashboard & Visualization
+streamlit
+plotly
+
+# Utilities
+# pyvis  # Uncomment if using pyvis for graph generation
