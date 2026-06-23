@@ -31,7 +31,7 @@ def expand_subgraph(G: nx.DiGraph, node_id: str, k: int = 2) -> nx.DiGraph:
         return nx.DiGraph()
 
     # BFS using the undirected view so we capture both up- and down-stream hops.
-    G_undirected = G.to_undirected()
+    G_undirected = G.to_undirected(as_view=True)
     
     # Manual BFS
     visited = {node_id}

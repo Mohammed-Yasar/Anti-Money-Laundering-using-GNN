@@ -81,7 +81,7 @@ def generate_case_report(
         edges_payload.append({
             "source": u,
             "target": v,
-            "amount": data.get("amount", 0.0),
+            "amount": data.get("total_amount", 0.0),
             "timestamps": clean_ts
         })
         

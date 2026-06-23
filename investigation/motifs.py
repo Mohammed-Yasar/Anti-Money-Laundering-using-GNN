@@ -68,11 +68,17 @@ def detect_layering(G: nx.DiGraph) -> bool:
       - each consecutive hop gap is ≤ 60 minutes
     """
     nodes = list(G.nodes())
+    state_checks = 0
+    MAX_STATE_CHECKS = 5000  # Guard against path explosion in dense networks
 
     for source in nodes:
         # DFS-style path exploration (bounded depth)
         stack = [(source, [source])]
         while stack:
+            state_checks += 1
+            if state_checks > MAX_STATE_CHECKS:
+                return False  # Early exit to prevent lockups
+
             current, path = stack.pop()
 
             path_len = len(path) - 1  # number of edges so far
@@ -114,7 +120,7 @@ def detect_circular(G: nx.DiGraph) -> bool:
     Return True if any directed cycle of length ≤ 6 exists in G.
     Uses networkx.simple_cycles (generator, stops early on first match).
     """
-    for cycle in nx.simple_cycles(G):
+    for cycle in nx.simple_cycles(G, length_bound=6):
         if len(cycle) <= 6:
             return True
     return False

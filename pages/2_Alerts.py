@@ -9,9 +9,17 @@ st.title("🚨 Alert Queue")
 st.markdown("Click **Investigate** on any alert to open the investigation panel.")
 
 # ── Load alerts ───────────────────────────────────────────────────────────────
-@st.cache_data
 def load_alerts():
-    with open("data/alerts/alerts.json", encoding="utf-8") as f:
+    import os
+    path = "data/alerts/alerts.json"
+    if not os.path.exists(path):
+        return []
+    mtime = os.path.getmtime(path)
+    return _load_alerts_cached(path, mtime)
+
+@st.cache_data
+def _load_alerts_cached(path, mtime):
+    with open(path, encoding="utf-8") as f:
         return json.load(f)
 
 alerts = load_alerts()

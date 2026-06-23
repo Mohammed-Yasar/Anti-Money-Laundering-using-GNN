@@ -9,9 +9,17 @@ import streamlit as st
 st.title("💡 Insights")
 st.markdown("Aggregate pattern analysis across all investigated cases.")
 
-@st.cache_data
 def load_cases():
-    with open("data/cases/cases.json", encoding="utf-8") as f:
+    import os
+    path = "data/cases/cases.json"
+    if not os.path.exists(path):
+        return []
+    mtime = os.path.getmtime(path)
+    return _load_cases_cached(path, mtime)
+
+@st.cache_data
+def _load_cases_cached(path, mtime):
+    with open(path, encoding="utf-8") as f:
         return json.load(f)
 
 cases    = load_cases()
@@ -31,7 +39,7 @@ if "typology" in cases_df.columns:
         title="Cases by Typology",
     )
     fig1.update_layout(showlegend=False, margin=dict(t=40))
-    st.plotly_chart(fig1, use_container_width=True)
+    st.plotly_chart(fig1, width="stretch")
 
 st.markdown("---")
 
@@ -50,7 +58,7 @@ with col1:
             labels={"risk_score": "Risk Score"},
         )
         fig2.update_layout(margin=dict(t=40))
-        st.plotly_chart(fig2, use_container_width=True)
+        st.plotly_chart(fig2, width="stretch")
 
 with col2:
     st.subheader("Subgraph Size Distribution")
@@ -64,7 +72,7 @@ with col2:
             labels={"subgraph_nodes": "Nodes in Subgraph"},
         )
         fig3.update_layout(margin=dict(t=40))
-        st.plotly_chart(fig3, use_container_width=True)
+        st.plotly_chart(fig3, width="stretch")
 
 st.markdown("---")
 
@@ -83,7 +91,7 @@ if "motifs_detected" in cases_df.columns:
         title="Motif Detection Rate (%)",
     )
     fig4.update_layout(showlegend=False, margin=dict(t=40))
-    st.plotly_chart(fig4, use_container_width=True)
+    st.plotly_chart(fig4, width="stretch")
 
 # ── Risk score by typology (box plot) ────────────────────────────────────────
 st.subheader("Risk Score by Typology")
@@ -97,4 +105,4 @@ if "typology" in cases_df.columns and "risk_score" in cases_df.columns:
         labels={"typology": "Typology", "risk_score": "Risk Score"},
     )
     fig5.update_layout(showlegend=False, margin=dict(t=40))
-    st.plotly_chart(fig5, use_container_width=True)
+    st.plotly_chart(fig5, width="stretch")

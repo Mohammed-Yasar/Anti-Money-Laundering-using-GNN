@@ -20,24 +20,41 @@ else:
     st.warning("⚠️ **Training Mode**: No pretrained model found. System will train on next run.")
 
 # ── Load Data ─────────────────────────────────────────────────────────────────
-@st.cache_data
 def load_transactions():
     path_up = "data/raw/uploaded_transactions.csv"
     path_tx = "data/raw/transactions.csv"
     path = path_up if os.path.exists(path_up) else path_tx
-    
     if not os.path.exists(path):
         return pd.DataFrame()
+    mtime = os.path.getmtime(path)
+    return _load_transactions_cached(path, mtime)
+
+@st.cache_data
+def _load_transactions_cached(path, mtime):
     return pd.read_csv(path, dtype=str)
 
-@st.cache_data
 def load_alerts():
-    with open("data/alerts/alerts.json", encoding="utf-8") as f:
-        return json.load(f)
+    path = "data/alerts/alerts.json"
+    if not os.path.exists(path):
+        return []
+    mtime = os.path.getmtime(path)
+    return _load_alerts_cached(path, mtime)
 
 @st.cache_data
+def _load_alerts_cached(path, mtime):
+    with open(path, encoding="utf-8") as f:
+        return json.load(f)
+
 def load_cases():
-    with open("data/cases/cases.json", encoding="utf-8") as f:
+    path = "data/cases/cases.json"
+    if not os.path.exists(path):
+        return []
+    mtime = os.path.getmtime(path)
+    return _load_cases_cached(path, mtime)
+
+@st.cache_data
+def _load_cases_cached(path, mtime):
+    with open(path, encoding="utf-8") as f:
         return json.load(f)
 
 tx_df     = load_transactions()
@@ -122,7 +139,7 @@ with left:
             template="plotly_dark",
         )
         fig_typo.update_layout(showlegend=False, margin=dict(t=20, b=20, l=20, r=20))
-        st.plotly_chart(fig_typo, use_container_width=True)
+        st.plotly_chart(fig_typo, width="stretch")
     else:
         st.info("Typology data not available.")
 
@@ -139,7 +156,7 @@ with right:
             template="plotly_dark",
         )
         fig_anom.update_layout(showlegend=False, margin=dict(t=20, b=20, l=20, r=20))
-        st.plotly_chart(fig_anom, use_container_width=True)
+        st.plotly_chart(fig_anom, width="stretch")
     else:
         st.info("Temporal anomaly data not available.")
 
@@ -208,4 +225,4 @@ if _qdf is not None:
             color_discrete_sequence=["#0099ff"],
         )
         fig_deg.update_layout(margin=dict(t=40, b=20, l=20, r=20))
-        st.plotly_chart(fig_deg, use_container_width=True)
+        st.plotly_chart(fig_deg, width="stretch")

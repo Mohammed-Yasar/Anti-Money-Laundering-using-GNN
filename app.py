@@ -64,14 +64,50 @@ if st.sidebar.button("▶ Run AML Pipeline"):
         spinner_msg = "Running AML pipeline… (this may take ~1–2 minutes)"
         
     with st.spinner(spinner_msg):
-        subprocess.run(["python", "main_gnn.py"], check=False, env=env)
-        subprocess.run(["python", "main_investigation.py"], check=False, env=env)
+        import sys
+        # Prefer sys.executable if it has torch, otherwise fall back to "python"
+        python_exe = sys.executable
+        try:
+            import torch
+        except ImportError:
+            python_exe = "python"
+
+        # Run GNN script
+        res_gnn = subprocess.run(
+            [python_exe, "main_gnn.py"],
+            capture_output=True,
+            text=True,
+            env=env,
+        )
+        sys.stdout.write(res_gnn.stdout)
+        sys.stderr.write(res_gnn.stderr)
+        if res_gnn.returncode != 0:
+            st.sidebar.error("Pipeline failed during GNN stage!")
+            with st.expander("GNN Error Details", expanded=True):
+                st.code(res_gnn.stderr)
+            st.stop()
+            
+        # Run Investigation script
+        res_inv = subprocess.run(
+            [python_exe, "main_investigation.py"],
+            capture_output=True,
+            text=True,
+            env=env,
+        )
+        sys.stdout.write(res_inv.stdout)
+        sys.stderr.write(res_inv.stderr)
+        if res_inv.returncode != 0:
+            st.sidebar.error("Pipeline failed during Investigation stage!")
+            with st.expander("Investigation Error Details", expanded=True):
+                st.code(res_inv.stderr)
+            st.stop()
+            
     st.sidebar.success("Pipeline execution completed!")
     time.sleep(1)
     st.rerun()
 
 if os.path.exists("data/raw/uploaded_transactions.csv"):
-    if st.sidebar.button("🗑 Reset to Default Data", use_container_width=True):
+    if st.sidebar.button("🗑 Reset to Default Data", width="stretch"):
         os.remove("data/raw/uploaded_transactions.csv")
         st.sidebar.success("Resetting to original dataset...")
         time.sleep(1)

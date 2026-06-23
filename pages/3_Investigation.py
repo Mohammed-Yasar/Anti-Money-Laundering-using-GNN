@@ -10,9 +10,17 @@ import plotly.graph_objects as go
 import streamlit as st
 
 # ── Load cases ────────────────────────────────────────────────────────────────
-@st.cache_data
 def load_cases():
-    with open("data/cases/cases.json", encoding="utf-8") as f:
+    import os
+    path = "data/cases/cases.json"
+    if not os.path.exists(path):
+        return []
+    mtime = os.path.getmtime(path)
+    return _load_cases_cached(path, mtime)
+
+@st.cache_data
+def _load_cases_cached(path, mtime):
+    with open(path, encoding="utf-8") as f:
         return json.load(f)
 
 cases = load_cases()

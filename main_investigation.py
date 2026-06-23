@@ -72,13 +72,8 @@ def main() -> None:
     # 2. Rebuild the TEST graph (no leakage — same split as alert source)
     # ------------------------------------------------------------------
     print_section("REBUILDING TEST GRAPH")
-    if os.getenv("AML_INFERENCE", "0") == "1":
-        df = pd.read_csv(os.getenv("AML_DATA_PATH", "data/raw/transactions.csv"))
-        print("Building graph from dataframe with rows:", len(df))
-        G_test, _ = build_graph(df)
-    else:
-        _, _, test_df = load_and_split()
-        G_test, _ = build_graph(test_df)
+    _, _, test_df = load_and_split()
+    G_test, _ = build_graph(test_df)
     
     print(f"  Test graph: {G_test.number_of_nodes():,} nodes, "
           f"{G_test.number_of_edges():,} edges")
