@@ -24,6 +24,10 @@ def _load_cases_cached(path, mtime):
         return json.load(f)
 
 cases = load_cases()
+if not cases:
+    st.info("ℹ️ **No cases available**: Please run the **AML Pipeline** in the sidebar to process data and generate cases for investigation.")
+    st.stop()
+
 case_map      = {c["node_id"]:  c for c in cases}
 case_id_map   = {c["case_id"]: c for c in cases}
 

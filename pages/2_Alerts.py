@@ -22,11 +22,6 @@ def _load_alerts_cached(path, mtime):
     with open(path, encoding="utf-8") as f:
         return json.load(f)
 
-alerts = load_alerts()
-df = pd.DataFrame(alerts).sort_values("risk_score", ascending=False).reset_index(drop=True)
-df["rank"] = df.index + 1
-
-# ── Risk tier badge ───────────────────────────────────────────────────────────
 def risk_badge(score):
     if score >= 0.85:
         return "🔴 Critical"
@@ -37,7 +32,13 @@ def risk_badge(score):
     else:
         return "🟢 Low"
 
-df["Risk Tier"] = df["risk_score"].apply(risk_badge)
+alerts = load_alerts()
+if alerts:
+    df = pd.DataFrame(alerts).sort_values("risk_score", ascending=False).reset_index(drop=True)
+    df["rank"] = df.index + 1
+    df["Risk Tier"] = df["risk_score"].apply(risk_badge)
+else:
+    df = pd.DataFrame(columns=["node_id", "risk_score", "alert_id", "rank", "Risk Tier"])
 
 # ── Filter controls ───────────────────────────────────────────────────────────
 col_f1, col_f2 = st.columns([2, 1])

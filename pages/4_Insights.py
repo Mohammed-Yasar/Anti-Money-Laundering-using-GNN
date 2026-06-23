@@ -23,6 +23,9 @@ def _load_cases_cached(path, mtime):
         return json.load(f)
 
 cases    = load_cases()
+if not cases:
+    st.info("ℹ️ **No cases available**: Insights will be available after you run the **AML Pipeline** to process investigations.")
+    st.stop()
 cases_df = pd.DataFrame(cases)
 
 # ── Typology Distribution ─────────────────────────────────────────────────────
