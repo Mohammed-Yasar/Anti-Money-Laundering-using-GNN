@@ -4,6 +4,7 @@ Entry point for the Streamlit multi-page application.
 """
 
 import os
+import shutil
 import time
 import subprocess
 import pandas as pd
@@ -112,6 +113,23 @@ if os.path.exists("data/raw/uploaded_transactions.csv"):
         st.sidebar.success("Resetting to original dataset...")
         time.sleep(1)
         st.rerun()
+
+# If no uploaded dataset and no default transactions.csv, copy a small demo
+# from the repository's test_csvs folder so the app has content on fresh deploys
+DEMO_SRC = os.path.join("test_csvs", "3_good_dataset.csv")
+DEFAULT_TX = os.path.join("data", "raw", "transactions.csv")
+if not os.path.exists(DEFAULT_TX) and not os.path.exists("data/raw/uploaded_transactions.csv"):
+    try:
+        os.makedirs(os.path.dirname(DEFAULT_TX), exist_ok=True)
+        if os.path.exists(DEMO_SRC):
+            shutil.copy(DEMO_SRC, DEFAULT_TX)
+            st.sidebar.info("Demo dataset installed: using sample transactions for overview.")
+        else:
+            # No demo available in repo — leave it for user upload
+            st.sidebar.info("No default dataset available — please upload a CSV to run the pipeline.")
+    except Exception as _e:
+        # Non-fatal; app can still run but will prompt for upload
+        st.sidebar.error(f"Could not prepare demo dataset: {_e}")
 
 st.sidebar.markdown("---")
 
