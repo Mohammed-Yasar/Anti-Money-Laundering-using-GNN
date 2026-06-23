@@ -61,8 +61,8 @@ Requires Python 3.8+. It is recommended to use a virtual environment.
 
 ```bash
 # Clone the repository
-git clone https://github.com/your-repo/aml-sim.git
-cd aml-sim
+git clone https://github.com/Mohammed-Yasar/Anti-Money-Laundering-using-GNN.git
+cd Anti-Money-Laundering-using-GNN
 
 # Install dependencies
 pip install -r requirements.txt
