@@ -81,6 +81,46 @@ else:
 c1, c2, c3, c4, c5 = st.columns(5)
 
 def kpi_card(col, label, value, color="#1f77b4"):
+    def _format_value(v):
+        if v is None:
+            return "N/A"
+        # Direct numeric types
+        try:
+            if isinstance(v, (int, float)):
+                # For floats, show up to 2 decimals when not whole
+                if isinstance(v, float) and not v.is_integer():
+                    return f"{v:,.2f}"
+                return f"{int(v):,}"
+        except Exception:
+            pass
+
+        # Handle numpy numeric types or strings containing numbers
+        try:
+            import numbers
+            if isinstance(v, numbers.Integral):
+                return f"{int(v):,}"
+            if isinstance(v, numbers.Real):
+                fv = float(v)
+                if fv.is_integer():
+                    return f"{int(fv):,}"
+                return f"{fv:,.2f}"
+        except Exception:
+            pass
+
+        # Try casting from string
+        try:
+            s = str(v).strip()
+            if s.isdigit():
+                return f"{int(s):,}"
+            # allow numeric with decimals
+            fv = float(s.replace(",", ""))
+            if fv.is_integer():
+                return f"{int(fv):,}"
+            return f"{fv:,.2f}"
+        except Exception:
+            return str(v)
+
+    val_str = _format_value(value)
     col.markdown(
         f"""
         <div style="
@@ -91,7 +131,7 @@ def kpi_card(col, label, value, color="#1f77b4"):
             text-align:center;
         ">
             <p style="color:#aaa;font-size:12px;margin:0;">{label}</p>
-            <p style="color:white;font-size:26px;font-weight:700;margin:4px 0 0 0;">{value:,}</p>
+            <p style="color:white;font-size:26px;font-weight:700;margin:4px 0 0 0;">{val_str}</p>
         </div>
         """,
         unsafe_allow_html=True,
