@@ -123,6 +123,39 @@ The `app.py` dashboard provides four primary views:
 3.  **Investigation**: Interactive graph explorer for deep-diving into account neighborhoods.
 4.  **Insights**: Typology-level performance and detection accuracy.
 
+### 🌐 Live Demo
+The dashboard is **live and deployed** on Streamlit Community Cloud:
+- **URL**: https://anti-money--laundering.streamlit.app/
+- **Status**: Production-ready with pretrained GNN model
+- **Demo Data**: Includes a sample synthetic dataset for immediate interaction
+
+#### Quick Start on Live App:
+1. Visit the link above
+2. Navigate through **Overview**, **Alerts**, **Investigation**, and **Insights** pages
+3. (Optional) Upload your own transaction CSV to run the pipeline in inference mode
+
+### 📸 Dashboard Screenshots
+
+#### Overview Page
+![System Overview](screenshots/overview.png)
+
+#### Alerts Dashboard
+![Alerts View](screenshots/alerts.png)
+
+#### Investigation & Graph Explorer
+![Investigation](screenshots/investigation.png)
+![Graph Visualization](screenshots/graph.png)
+
+#### Insights & Analytics
+![Insights](screenshots/insights.png)
+![Additional Insights](screenshots/insights2.png)
+
+#### Alerts Management
+![Alerts2](screenshots/alerts2.png)
+
+#### Case Similarity
+![Similar Cases](screenshots/similar%20cases.png)
+
 ---
 
 ## 📜 License & Disclaimer
